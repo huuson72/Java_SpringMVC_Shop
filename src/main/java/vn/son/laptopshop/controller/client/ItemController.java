@@ -1,8 +1,12 @@
 package vn.son.laptopshop.controller.client;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import org.apache.tomcat.util.http.fileupload.ThresholdingOutputStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,14 +28,17 @@ import vn.son.laptopshop.domain.Product_;
 import vn.son.laptopshop.domain.User;
 import vn.son.laptopshop.domain.dto.ProductCriteriaDTO;
 import vn.son.laptopshop.service.ProductService;
+import vn.son.laptopshop.service.VNPayService;
 
 @Controller
 public class ItemController {
 
     private final ProductService productService;
+    private final VNPayService vNPayService;
 
-    public ItemController(ProductService productService) {
+    public ItemController(ProductService productService, VNPayService vNPayService) {
         this.productService = productService;
+        this.vNPayService = vNPayService;
     }
 
     // @GetMapping("/product/{id}")
@@ -144,20 +151,41 @@ public class ItemController {
             HttpServletRequest request,
             @RequestParam("receiverName") String receiverName,
             @RequestParam("receiverAddress") String receiverAddress,
-            @RequestParam("receiverPhone") String receiverPhone) {
-        User currentUser = new User();// null
+            @RequestParam("receiverPhone") String receiverPhone,
+            @RequestParam("paymentMethod") String paymentMethod,
+            @RequestParam("totalPrice") String totalPrice) throws UnsupportedEncodingException {
+        User currentUser = new User();
         HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
         currentUser.setId(id);
 
-        this.productService.handlePlaceOrder(currentUser, session, receiverName, receiverAddress, receiverPhone);
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+
+        this.productService.handlePlaceOrder(currentUser, session,
+                receiverName, receiverAddress, receiverPhone,
+                paymentMethod, uuid);
+
+        if (!paymentMethod.equals("COD")) {
+
+            String ip = this.vNPayService.getIpAddress(request);
+            String vnpUrl = this.vNPayService.generateVNPayURL(Double.parseDouble(totalPrice), uuid, ip);
+
+            return "redirect:" + vnpUrl;
+        }
 
         return "redirect:/thanks";
+
     }
 
     @GetMapping("/thanks")
-    public String getThankYouPage(Model model) {
+    public String getThankYouPage(Model model,
+            @RequestParam("vnp_ResponseCode") Optional<String> vnpayResponseCode,
+            @RequestParam("vnp_TxnRef") Optional<String> paymentRef) {
 
+        if (vnpayResponseCode.isPresent() && paymentRef.isPresent()) {
+            String paymentStatus = vnpayResponseCode.get().equals("00") ? "PAYMENT_SUCCED" : "PAYMENT_FAILED";
+            this.productService.updatePaymentStatus(paymentRef.get(), paymentStatus);
+        }
         return "client/cart/thanks";
     }
 

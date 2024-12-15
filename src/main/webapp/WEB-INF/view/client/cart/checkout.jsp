@@ -129,32 +129,40 @@
                                                 <h5>Thông Tin Người Nhận</h5>
                                                 <div class="row">
                                                     <div class="col-12 form-group mb-3">
-                                                        <label><span style="color: red;">*</span> Tên người nhận</label>
+                                                        <label> Tên người nhận</label>
                                                         <input class="form-control" name="receiverName" required />
                                                     </div>
                                                     <div class="col-12 form-group mb-3">
-                                                        <label><span style="color: red;">*</span> Địa chỉ người
+                                                        <label> Địa chỉ người
                                                             nhận</label>
                                                         <input class="form-control" name="receiverAddress" required />
                                                     </div>
                                                     <div class="col-12 form-group mb-3">
-                                                        <label><span style="color: red;">*</span> Số điện thoại</label>
+                                                        <label> Số điện thoại</label>
 
                                                         <input class="form-control" name="receiverPhone" required />
                                                     </div>
                                                     <div class="col-12 form-group mb-3">
-                                                        <label><span style="color: red;">*</span> Chọn ngân hàng thanh
-                                                            toán</label>
-                                                        <select class="form-control" name="receiverAddress" required>
-                                                            <option value="">Chọn ngân hàng</option>
-                                                            <option value="bank1">Vietinbank</option>
-                                                            <option value="bank2">Techcombank</option>
-                                                            <option value="bank3">Vietcombank</option>
-                                                            <!-- Thêm các tùy chọn ngân hàng khác tại đây -->
-                                                        </select>
+                                                        <label>Hình thức thanh toán</label>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="paymentMethod" value="COD" id="COD" checked>
+                                                            <label class="form-check-label" for="COD">
+                                                                Thanh toán khi nhận hàng
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="paymentMethod" value="BANKING" id="BANKING">
+                                                            <label class="form-check-label" for="BANKING">
+                                                                Thanh toán bằng ví VNPAY
+                                                            </label>
+                                                        </div>
+                                                        <input style="display: none;" value="${totalPrice}"
+                                                            name="totalPrice" />
                                                     </div>
 
-                                                    <span style="color: red;">*Các thông tin bắt buộc nhập</span>
+
                                                     <div class="mt-4">
                                                         <i class="fas fa-arrow-left"></i>
                                                         <a href="/cart">Quay lại giỏ hàng</a>
@@ -181,15 +189,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- Thêm lựa chọn hình thức thanh toán -->
-                                                    <div class="form-group mt-3">
-                                                        <label for="paymentMethod">Chọn hình thức thanh toán:</label>
-                                                        <select class="form-select" name="paymentMethod"
-                                                            id="paymentMethod">
-                                                            <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-                                                            <option value="VNPay">Thanh toán qua VNPay</option>
-                                                        </select>
-                                                    </div>
+
                                                 </div>
                                                 <div
                                                     class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">

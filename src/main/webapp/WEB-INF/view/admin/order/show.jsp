@@ -42,6 +42,7 @@
                                                         <th>ID</th>
                                                         <th>Giá tiền</th>
                                                         <th>Người dùng</th>
+                                                        <th>Payment</th>
                                                         <th>Trạng thái</th>
                                                         <th>Xử lí</th>
                                                     </tr>
@@ -56,6 +57,15 @@
                                                             </td>
                                                             <td>${order.user.fullName}</td>
                                                             <td>${order.status}</td>
+                                                            <td>
+                                                                <div>Trạng thái: ${order.paymentStatus}</div>
+                                                                <div>Ref: ${order.paymentRef}</div>
+
+                                                                <div>Phương thức thanh toán: ${order.paymentMethod}
+                                                                </div>
+
+
+
                                                             <td>
                                                                 <a href="/admin/order/${order.id}"
                                                                     class="btn btn-success">Xem </a>
