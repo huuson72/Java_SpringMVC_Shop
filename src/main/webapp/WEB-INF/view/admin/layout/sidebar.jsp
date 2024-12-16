@@ -24,18 +24,7 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Đơn hàng
                         </a>
-                        <a class="nav-link" href="/admin/promotion">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Khuyến mãi
-                        </a>
-                        <a class="nav-link" href="/admin/promotion">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Đánh giá
-                        </a>
-                        <a class="nav-link" href="/admin/promotion">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Tài chính
-                        </a>
+
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">

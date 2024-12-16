@@ -34,38 +34,7 @@
                                             <div class="d-flex justify-content-between">
                                                 <h3>Danh sách sản phẩm</h3>
 
-                                                <form class="d-flex" action="/admin/product/search" method="get">
-                                                    <input class="form-control me-2" type="search" name="keyword"
-                                                        placeholder="Tìm sản phẩm" aria-label="Search">
-                                                    <!-- Tìm kiếm theo các tiêu chí -->
-                                                    <select class="form-select me-2" name="searchOption">
-                                                        <option value="">Tìm kiếm theo...</option>
-                                                        <!-- Tìm kiếm theo tên -->
-                                                        <optgroup label="Tên sản phẩm">
-                                                            <option value="name_harry">Sản phẩm tên 'Harry'</option>
-                                                            <option value="name_macbook">Sản phẩm tên 'Macbook'</option>
-                                                        </optgroup>
 
-                                                        <!-- Tìm kiếm theo giá -->
-                                                        <optgroup label="Giá">
-                                                            <option value="price_0-500000">Dưới 500,000 VND</option>
-                                                            <option value="price_500000-1000000">500,000 - 1,000,000 VND
-                                                            </option>
-                                                            <option value="price_1000000-5000000">1,000,000 - 5,000,000
-                                                                VND</option>
-                                                            <option value="price_5000000">Trên 5,000,000 VND</option>
-                                                        </optgroup>
-
-                                                        <!-- Tìm kiếm theo hãng -->
-                                                        <optgroup label="Hãng sản xuất">
-                                                            <c:forEach var="factory" items="${factories}">
-                                                                <option value="factory_${factory}">Hãng: ${factory}
-                                                                </option>
-                                                            </c:forEach>
-                                                        </optgroup>
-                                                    </select>
-                                                    <button class="btn btn-outline-success" type="submit">Tìm</button>
-                                                </form>
                                                 <a href="/admin/product/create" class="btn btn-primary">Tạo sản phẩm</a>
                                             </div>
 

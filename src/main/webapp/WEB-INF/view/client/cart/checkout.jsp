@@ -182,12 +182,8 @@
                                                             <p class="mb-0">0 đ</p>
                                                         </div>
                                                     </div>
-                                                    <div class="mt-3 d-flex justify-content-between">
-                                                        <h5 class="mb-0 me-4">Hình thức</h5>
-                                                        <div class="">
-                                                            <p class="mb-0">Thanh toán khi nhận hàng (COD)</p>
-                                                        </div>
-                                                    </div>
+
+
 
 
                                                 </div>
@@ -201,7 +197,7 @@
 
                                                 <button
                                                     class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">
-                                                    Xác nhận thanh toán
+                                                    Xác nhận đặt hàng
                                                 </button>
                                             </div>
                                         </div>

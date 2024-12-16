@@ -44,8 +44,8 @@ public class UserController {
         List<User> arrUsers = this.userService.getAllUsersByEmail("1@gmail.com");
         System.out.println(arrUsers);
 
-        model.addAttribute("eric", "test");
-        model.addAttribute("hoidanit", "from controller with model");
+        model.addAttribute("son", "test");
+        model.addAttribute("sontau", "from controller with model");
         return "hello";
     }
 
@@ -91,9 +91,9 @@ public class UserController {
 
     @PostMapping(value = "/admin/user/create")
     public String createUserPage(Model model,
-            @ModelAttribute("newUser") @Valid User hoidanit,
+            @ModelAttribute("newUser") @Valid User son,
             BindingResult newUserBindingResult,
-            @RequestParam("hoidanitFile") MultipartFile file) {
+            @RequestParam("sonFile") MultipartFile file) {
 
         // List<FieldError> errors = newUserBindingResult.getFieldErrors();
         // for (FieldError error : errors) {
@@ -107,13 +107,13 @@ public class UserController {
 
         //
         String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
-        String hashPassword = this.passwordEncoder.encode(hoidanit.getPassword());
+        String hashPassword = this.passwordEncoder.encode(son.getPassword());
 
-        hoidanit.setAvatar(avatar);
-        hoidanit.setPassword(hashPassword);
-        hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
+        son.setAvatar(avatar);
+        son.setPassword(hashPassword);
+        son.setRole(this.userService.getRoleByName(son.getRole().getName()));
         // save
-        this.userService.handleSaveUser(hoidanit);
+        this.userService.handleSaveUser(son);
         return "redirect:/admin/user";
     }
 
@@ -125,12 +125,12 @@ public class UserController {
     }
 
     @PostMapping("/admin/user/update")
-    public String postUpdateUser(Model model, @ModelAttribute("newUser") User hoidanit) {
-        User currentUser = this.userService.getUserById(hoidanit.getId());
+    public String postUpdateUser(Model model, @ModelAttribute("newUser") User son) {
+        User currentUser = this.userService.getUserById(son.getId());
         if (currentUser != null) {
-            currentUser.setAddress(hoidanit.getAddress());
-            currentUser.setFullName(hoidanit.getFullName());
-            currentUser.setPhone(hoidanit.getPhone());
+            currentUser.setAddress(son.getAddress());
+            currentUser.setFullName(son.getFullName());
+            currentUser.setPhone(son.getPhone());
 
             // bug here
             this.userService.handleSaveUser(currentUser);

@@ -121,8 +121,7 @@
                                                                     path="confirmPassword" />
                                                                 <label><span style="color: red;">*</span> Xác nhận mật
                                                                     khẩu</label>
-                                                                <span style="color: red;">*Mật khẩu nhập lại không chính
-                                                                    xác</span>
+
                                                                 ${errorPassword}
                                                             </div>
                                                         </div>

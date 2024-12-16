@@ -124,7 +124,7 @@
                                             <div class="mb-3 col-12">
                                                 <label for="avatarFile" class="form-label">Ảnh:</label>
                                                 <input class="form-control" type="file" id="avatarFile"
-                                                    accept=".png, .jpg, .jpeg" name="hoidanitFile" />
+                                                    accept=".png, .jpg, .jpeg" name="sonFile" />
                                             </div>
                                             <div class="col-12 mb-3">
                                                 <img style="max-height: 250px; display: none;" alt="avatar preview"
