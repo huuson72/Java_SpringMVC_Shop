@@ -20,7 +20,9 @@ import jakarta.validation.Valid;
 import vn.son.laptopshop.domain.Order;
 import vn.son.laptopshop.domain.Product;
 import vn.son.laptopshop.domain.User;
+import vn.son.laptopshop.domain.dto.ChangePasswordRequest;
 import vn.son.laptopshop.domain.dto.RegisterDTO;
+import vn.son.laptopshop.domain.dto.UpdateUserDTO;
 import vn.son.laptopshop.service.OrderService;
 import vn.son.laptopshop.service.ProductService;
 import vn.son.laptopshop.service.UserService;
@@ -78,6 +80,7 @@ public class HomePageController {
 
     @PostMapping("/register")
     public String handleRegister(
+            //Kiểm tra dữ liệu từ form đăng ký thông qua BindingResult
             @ModelAttribute("registerUser") @Valid RegisterDTO registerDTO,
             BindingResult bindingResult) {
 
@@ -149,8 +152,95 @@ public class HomePageController {
 
     @GetMapping("/user/changepass")
     public String getChangePassPage(Model model) {
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
+        return "client/auth/changepass"; // Tên file giao diện (JSP hoặc Thymeleaf)
+    }
 
-        return "client/auth/changepass";
+    @PostMapping("/user/changepass")
+    public String handleChangePassword(
+            @ModelAttribute("changePasswordRequest") @Valid ChangePasswordRequest request,
+            BindingResult bindingResult,
+            HttpServletRequest httpRequest,
+            Model model) {
+
+        // Nếu có lỗi từ form
+        if (bindingResult.hasErrors()) {
+            return "client/auth/changepass";
+        }
+
+        // Lấy email người dùng hiện tại từ session
+        HttpSession session = httpRequest.getSession(false);
+        if (session == null || session.getAttribute("email") == null) {
+            model.addAttribute("error", "Bạn cần đăng nhập để đổi mật khẩu.");
+            return "client/auth/changepass";
+        }
+
+        String email = (String) session.getAttribute("email");
+
+        try {
+            // Gọi service để đổi mật khẩu
+            userService.changePassword(email, request.getOldPassword(), request.getNewPassword());
+            model.addAttribute("message", "Đổi mật khẩu thành công!");
+            return "client/auth/changepass";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "client/auth/changepass";
+        }
+    }
+
+    @GetMapping("/user/changeinfo")
+    public String getChangeInfoPage(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("email") == null) {
+            return "redirect:/login";
+        }
+
+        String email = (String) session.getAttribute("email");
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Chuyển dữ liệu từ User sang DTO
+        UpdateUserDTO userDTO = new UpdateUserDTO();
+        userDTO.setFullName(user.getFullName());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setPhone(user.getPhone());
+
+        model.addAttribute("userDTO", userDTO);
+        return "client/auth/changeinfo";
+    }
+
+    @PostMapping("/user/changeinfo")
+    public String handleChangeInfo(
+            @ModelAttribute("userDTO") @Valid UpdateUserDTO userDTO,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "client/auth/changeinfo";
+        }
+
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("email") == null) {
+            return "redirect:/login";
+        }
+
+        String email = (String) session.getAttribute("email");
+        User existingUser = userService.getUserByEmail(email);
+        if (existingUser == null) {
+            return "redirect:/login";
+        }
+
+        // Cập nhật thông tin
+        existingUser.setFullName(userDTO.getFullName());
+        existingUser.setAddress(userDTO.getAddress());
+        existingUser.setPhone(userDTO.getPhone());
+        userService.saveUser(existingUser);
+
+        model.addAttribute("message", "Thông tin đã được cập nhật thành công.");
+        return "client/auth/changeinfo";
     }
 
 }

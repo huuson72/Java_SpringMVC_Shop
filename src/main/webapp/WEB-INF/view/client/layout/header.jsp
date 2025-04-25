@@ -14,7 +14,7 @@
 
                     <a href="/" class="navbar-brand">
 
-                        <h1 class="text-dark display-6">HStore</h1>
+                        <h1 class="text-dark display-6">HStore Laptop Shop</h1>
 
                     </a>
 
@@ -84,7 +84,7 @@
                                                 <c:out value="${sessionScope.fullName}" />
                                             </div>
                                         </li>
-                                        <li><a class="dropdown-item" href="/profile">Quản lý tài khoản</a></li>
+                                        <li><a class="dropdown-item" href="/user/changeinfo">Quản lý tài khoản</a></li>
                                         <li><a class="dropdown-item" href="/order-history">Lịch sử mua hàng</a></li>
                                         <li><a class="dropdown-item" href="/user/changepass">Đổi mật khẩu</a></li>
                                         <li>

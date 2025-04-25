@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.son.laptopshop.domain.Role;
@@ -21,15 +22,35 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
             RoleRepository roleRepository,
             ProductRepository productRepository,
-            OrderRepository orderRepository) {
+            OrderRepository orderRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found with email: " + email);
+        }
+
+        // Verify old password
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Old password is incorrect.");
+        }
+
+        // Encode new password and save
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
     }
 
     public Page<User> getAllUsers(Pageable page) {
@@ -84,5 +105,9 @@ public class UserService {
 
     public long countOrders() {
         return this.orderRepository.count();
+    }
+
+    public void saveUser(User user) {
+        this.userRepository.save(user);
     }
 }
