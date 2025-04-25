@@ -257,7 +257,7 @@
                                                                         <i
                                                                             class="fa fa-shopping-bag me-2 text-primary"></i>Thêm
                                                                         vào giỏ
-                                                                        hàng</button>
+                                                                    </button>
                                                                 </form>
                                                             </div>
                                                         </div>

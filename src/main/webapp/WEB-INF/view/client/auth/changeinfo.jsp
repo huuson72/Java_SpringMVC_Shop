@@ -5,7 +5,7 @@
 
         <head>
             <meta charset="utf-8">
-            <title>Đổi Mật Khẩu - Laptopshop</title>
+            <title>Đổi Thông Tin Cá Nhân - Laptopshop</title>
             <meta content="width=device-width, initial-scale=1.0" name="viewport">
             <meta content="" name="keywords">
             <meta content="" name="description">
@@ -33,7 +33,7 @@
         </head>
 
         <div class="container mt-5 pt-5">
-            <h2 class="text-center mb-4">Đổi Mật Khẩu</h2>
+            <h2 class="text-center mb-4">Đổi Thông Tin Cá Nhân</h2>
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <!-- Hiển thị thông báo thành công -->
@@ -49,24 +49,27 @@
                         </div>
                     </c:if>
 
-                    <!-- Form đổi mật khẩu -->
-                    <form action="/user/changepass" method="post" class="bg-light p-4 rounded shadow-sm">
+                    <!-- Form đổi thông tin -->
+                    <form action="/user/changeinfo" method="post" class="bg-light p-4 rounded shadow-sm">
                         <input type="hidden" name="_csrf" value="${_csrf.token}" />
+
                         <div class="mb-3">
-                            <label for="currentPassword" class="form-label">Mật Khẩu Hiện Tại</label>
-                            <input type="password" class="form-control" id="currentPassword" name="oldPassword"
+                            <label for="fullName" class="form-label">Họ và Tên</label>
+                            <input type="text" class="form-control" id="fullName" name="fullName"
+                                value="${userDTO.fullName}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số Điện Thoại</label>
+                            <input type="text" class="form-control" id="phone" name="phone" value="${userDTO.phone}"
                                 required>
                         </div>
                         <div class="mb-3">
-                            <label for="newPassword" class="form-label">Mật Khẩu Mới</label>
-                            <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                            <label for="address" class="form-label">Địa Chỉ</label>
+                            <input type="text" class="form-control" id="address" name="address"
+                                value="${userDTO.address}" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Xác Nhận Mật Khẩu Mới</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                                required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Đổi Mật Khẩu</button>
+
+                        <button type="submit" class="btn btn-primary">Cập Nhật Thông Tin</button>
                     </form>
 
                 </div>

@@ -48,6 +48,7 @@ public class ItemController {
     //     model.addAttribute("id", id);
     //     return "client/product/detail";
     // }
+    // Lấy thông tin chi tiết của một sản phẩm theo id từ cơ sở dữ liệu và hiển thị trang chi tiết sản phẩm.
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable long id) {
         // Lấy sản phẩm theo id
@@ -119,25 +120,27 @@ public class ItemController {
 
     @GetMapping("/checkout")
     public String getCheckOutPage(Model model, HttpServletRequest request) {
+        // Lấy ngươi dùng hiện tại từ session
         User currentUser = new User();// null
         HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
         currentUser.setId(id);
-
+        // Lấy giỏ hàng của người dùng:
         Cart cart = this.productService.fetchByUser(currentUser);
-
+        // Xử lí giỏ hàng trống
         List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
-
+        // Tổng tiền đơn hàng
         double totalPrice = 0;
         for (CartDetail cd : cartDetails) {
             totalPrice += cd.getPrice() * cd.getQuantity();
         }
-
+        // Truyền dữ liệu vào model
         model.addAttribute("cartDetails", cartDetails);
         model.addAttribute("totalPrice", totalPrice);
 
         return "client/cart/checkout";
     }
+//Cập nhật thông tin giỏ hàng trước khi thanh toán.
 
     @PostMapping("/confirm-checkout")
     public String getCheckOutPage(@ModelAttribute("cart") Cart cart) {
@@ -145,20 +148,23 @@ public class ItemController {
         this.productService.handleUpdateCartBeforeCheckout(cartDetails);
         return "redirect:/checkout";
     }
+// Xử lý việc tạo đơn hàng và chuyển hướng đến trang thanh toán.
 
     @PostMapping("/place-order")
     public String handlePlaceOrder(
             HttpServletRequest request,
+            //Các tham số truyền vào từ form thanh toán
             @RequestParam("receiverName") String receiverName,
             @RequestParam("receiverAddress") String receiverAddress,
             @RequestParam("receiverPhone") String receiverPhone,
             @RequestParam("paymentMethod") String paymentMethod,
             @RequestParam("totalPrice") String totalPrice) throws UnsupportedEncodingException {
+        //Xử lí tạo đối tượng người dùng
         User currentUser = new User();
         HttpSession session = request.getSession(false);
         long id = (long) session.getAttribute("id");
         currentUser.setId(id);
-
+        //Tạo một UUID ngẫu nhiên cho đơn hàng
         final String uuid = UUID.randomUUID().toString().replace("-", "");
 
         this.productService.handlePlaceOrder(currentUser, session,
@@ -176,6 +182,7 @@ public class ItemController {
         return "redirect:/thanks";
 
     }
+// thông báo kết quả thanh toán.
 
     @GetMapping("/thanks")
     public String getThankYouPage(Model model,
@@ -207,40 +214,43 @@ public class ItemController {
             HttpServletRequest request) {
         int page = 1;
         try {
+            // Kiểm tra xem có giá trị trang hiện tại trong productCriteriaDTO không
             if (productCriteriaDTO.getPage().isPresent()) {
-                // convert from String to int
+                // Nếu có, chuyển đổi từ String sang int để lấy số trang
                 page = Integer.parseInt(productCriteriaDTO.getPage().get());
             } else {
-                // page = 1
+                // Nếu không có, giữ giá trị page là 1 (trang đầu tiên)
             }
         } catch (Exception e) {
-            // page = 1
+            // Nếu có lỗi trong quá trình chuyển đổi (ví dụ: trang không hợp lệ), giữ page = 1
             // TODO: handle exception
         }
 
-        // check sort price
+        // Khởi tạo đối tượng Pageable với số trang là `page - 1` và mỗi trang có tối đa 10 sản phẩm
         Pageable pageable = PageRequest.of(page - 1, 10);
-
+        // Kiểm tra nếu có yêu cầu sắp xếp sản phẩm theo giá
         if (productCriteriaDTO.getSort() != null && productCriteriaDTO.getSort().isPresent()) {
+            // Lấy giá trị sắp xếp từ productCriteriaDTO
             String sort = productCriteriaDTO.getSort().get();
+            // Nếu yêu cầu sắp xếp theo giá tăng dần
             if (sort.equals("gia-tang-dan")) {
                 pageable = PageRequest.of(page - 1, 10, Sort.by(Product_.PRICE).ascending());
             } else if (sort.equals("gia-giam-dan")) {
                 pageable = PageRequest.of(page - 1, 10, Sort.by(Product_.PRICE).descending());
             }
         }
-
+        // Gọi phương thức fetchProductsWithSpec để lấy danh sách sản phẩm từ service với các tiêu chí lọc và phân trang
         Page<Product> prs = this.productService.fetchProductsWithSpec(pageable, productCriteriaDTO);
-
+        // Lấy danh sách sản phẩm từ kết quả Page. Nếu không có sản phẩm, trả về danh sách trống.
         List<Product> products = prs.getContent().size() > 0 ? prs.getContent()
                 : new ArrayList<Product>();
 
         String qs = request.getQueryString();
         if (qs != null && !qs.isBlank()) {
-            // remove page
+            // Nếu có chuỗi query, loại bỏ thông tin trang hiện tại 
             qs = qs.replace("page=" + page, "");
         }
-
+        // Thêm dữ liệu vào model để truyền cho view
         model.addAttribute("products", products);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", prs.getTotalPages());

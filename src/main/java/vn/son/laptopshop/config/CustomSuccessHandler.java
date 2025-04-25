@@ -26,20 +26,23 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     private UserService userService;
 
     protected String determineTargetUrl(final Authentication authentication) {
-
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_USER", "/");
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
 
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
         for (final GrantedAuthority grantedAuthority : authorities) {
             String authorityName = grantedAuthority.getAuthority();
+            System.out.println("Granted Authority: " + authorityName); // Debug
             if (roleTargetUrlMap.containsKey(authorityName)) {
                 return roleTargetUrlMap.get(authorityName);
             }
         }
 
-        throw new IllegalStateException();
+        // Fallback URL
+        System.out.println("No matching role found, redirecting to default page.");
+        return "/";
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, Authentication authentication) {
@@ -70,17 +73,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-
         String targetUrl = determineTargetUrl(authentication);
-
         if (response.isCommitted()) {
-
             return;
         }
-
         redirectStrategy.sendRedirect(request, response, targetUrl);
         clearAuthenticationAttributes(request, authentication);
-
     }
 
 }

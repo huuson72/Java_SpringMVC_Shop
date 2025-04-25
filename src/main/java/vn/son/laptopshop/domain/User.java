@@ -11,10 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -42,7 +43,22 @@ public class User implements Serializable {
     private String phone;
 
     private String avatar;
+    private String provider;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.provider == null) {
+            this.provider = "LOCAL";
+        }
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
     // roleId
     // User many -> to one -> role
     @ManyToOne

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hair Salon Frame</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .frame-container {
+            position: relative;
+            width: 400px;
+            padding: 20px;
+        }
+
+        .oval-frame {
+            position: relative;
+            width: 100%;
+            padding-bottom: 120%;
+            border-radius: 50%/40%;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .oval-frame::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 2px solid #fff;
+            border-radius: 50%/40%;
+            z-index: 2;
+        }
+
+        .oval-frame img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .outer-frame {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #f0f0f0;
+            border-radius: 50%/40%;
+            z-index: -1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="frame-container">
+        <div class="oval-frame">
+            <img src="https://images.unsplash.com/photo-1560869713-da86a9ec0686?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80"
+                alt="Hair Styling">
+        </div>
+        <div class="outer-frame"></div>
+    </div>
+</body>
+
+</html>

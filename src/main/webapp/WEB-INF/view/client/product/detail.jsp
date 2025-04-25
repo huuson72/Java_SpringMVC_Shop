@@ -369,7 +369,7 @@
                                             <button data-product-id="${product.id}" onclick="openPopup()"
                                                 class="btnAddToCartDetail btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                                 <i class="fa fa-shopping-bag me-2" style="color: #6af32a"></i>
-                                                Thêm vào giỏ hàng
+                                                Thêm vào giỏ
                                             </button>
                                             <!-- </form> -->
 

@@ -61,15 +61,17 @@ public class ProductService {
     }
 
     public Page<Product> fetchProductsWithSpec(Pageable page, ProductCriteriaDTO productCriteriaDTO) {
+        // Nếu tất cả các tiêu chí lọc đều không được cung cấp, trả về tất cả sản phẩm với phân trang.
         if (productCriteriaDTO.getTarget() == null
                 && productCriteriaDTO.getFactory() == null
                 && productCriteriaDTO.getPrice() == null) {
             return this.productRepository.findAll(page);
         }
-
+        // Khởi tạo Specification rỗng để bắt đầu kết hợp các điều kiện lọc.
         Specification<Product> combinedSpec = Specification.where(null);
-
+        // Lọc theo đối tượng sử dụng (target)
         if (productCriteriaDTO.getTarget() != null && productCriteriaDTO.getTarget().isPresent()) {
+            // Gọi phương thức matchListTarget để tạo Specification dựa trên danh sách target.
             Specification<Product> currentSpecs = ProductSpecs.matchListTarget(productCriteriaDTO.getTarget().get());
             combinedSpec = combinedSpec.and(currentSpecs);
         }
@@ -87,13 +89,16 @@ public class ProductService {
     }
 
     // case 6
+    // Xây dựng Specification để lọc sản phẩm theo khoảng giá.
     public Specification<Product> buildPriceSpecification(List<String> price) {
+        // Khởi tạo Specification rỗng để kết hợp các điều kiện lọc khoảng giá.
         Specification<Product> combinedSpec = Specification.where(null); // disconjunction
+        // Lặp qua từng khoảng giá trong danh sách price.
         for (String p : price) {
             double min = 0;
             double max = 0;
 
-            // Set the appropriate min and max based on the price range string
+            // Xác định min và max dựa trên chuỗi khoảng giá.
             switch (p) {
                 case "duoi-10-trieu":
                     min = 1;
@@ -112,13 +117,14 @@ public class ProductService {
                     max = 200000000;
                     break;
             }
-
+            // Nếu min và max hợp lệ (khác 0), tạo Specification cho khoảng giá này.
             if (min != 0 && max != 0) {
                 Specification<Product> rangeSpec = ProductSpecs.matchMultiplePrice(min, max);
+                // Kết hợp điều kiện khoảng giá này với các điều kiện trước đó bằng OR.
                 combinedSpec = combinedSpec.or(rangeSpec);
             }
         }
-
+// Trả về Specification kết hợp của tất cả khoảng giá.
         return combinedSpec;
     }
 
@@ -261,14 +267,12 @@ public class ProductService {
             String receiverName, String receiverAddress, String receiverPhone,
             String paymentMethod, String uuid) {
 
-        // step 1: get cart by user
         Cart cart = this.cartRepository.findByUser(user);
         if (cart != null) {
             List<CartDetail> cartDetails = cart.getCartDetails();
 
             if (cartDetails != null) {
 
-                // create order
                 Order order = new Order();
                 order.setUser(user);
                 order.setReceiverName(receiverName);
@@ -298,14 +302,12 @@ public class ProductService {
                     this.orderDetailRepository.save(orderDetail);
                 }
 
-                // step 2: delete cart_detail and cart
                 for (CartDetail cd : cartDetails) {
                     this.cartDetailRepository.deleteById(cd.getId());
                 }
 
                 this.cartRepository.deleteById(cart.getId());
 
-                // step 3 : update session
                 session.setAttribute("sum", 0);
             }
         }
