@@ -14,7 +14,7 @@
 
                     <a href="/" class="navbar-brand">
 
-                        <h1 class="text-dark display-6">HStore S</h1>
+                        <h1 class="text-dark display-6">HStore Laptop Shop</h1>
 
                     </a>
 
